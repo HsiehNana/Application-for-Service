@@ -13,7 +13,7 @@
     <header class="bg-emerald-700 text-white shadow-md">
         <div class="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center">
             <h1 class="text-3xl font-bold">🏫 高雄市小港區二苓國民小學 - 處室勞務申請系統</h1>
-            <button onclick="toggleView()" id="switchBtn" class="bg-emerald-800 hover:bg-emerald-900 px-6 py-3 rounded-xl text-lg font-bold transition shadow">
+            <button onclick="checkAdminPassword()" id="switchBtn" class="bg-emerald-800 hover:bg-emerald-900 px-6 py-3 rounded-xl text-lg font-bold transition shadow">
                 切換至後端管理檢視
             </button>
         </div>
@@ -97,8 +97,11 @@
             </div>
 
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="p-6 bg-slate-100 border-b font-bold text-slate-800 text-xl">
-                    📂 勞務申請依序管理清單
+                <div class="p-6 bg-slate-100 border-b font-bold text-slate-800 text-xl flex justify-between items-center">
+                    <span>📂 勞務申請依序管理清單</span>
+                    <button onclick="returnToUserView()" class="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-xl text-base">
+                        返回前端申請畫面
+                    </button>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
@@ -136,14 +139,32 @@
                 priority: '中', 
                 status: '處理中', 
                 reply: '已排定於本週五進行清運。',
-                replyTime: '2026-06-08 14:20' // 新增回覆時間示範
+                replyTime: '2026-06-08 14:20'
             }
         ];
 
         let currentFilter = '全部';
+        let isAdminLoggedIn = false; // 記錄是否已通過後台驗證
 
         document.getElementById('applyDate').value = new Date().toISOString().split('T')[0];
 
+        // 檢查後台密碼
+        function checkAdminPassword() {
+            if (isAdminLoggedIn) {
+                toggleView();
+                return;
+            }
+
+            const inputPassword = prompt('請輸入後端管理密碼：');
+            if (inputPassword === '8016837#311') {
+                isAdminLoggedIn = true;
+                toggleView();
+            } else if (inputPassword !== null) {
+                alert('密碼錯誤，無法進入後台！');
+            }
+        }
+
+        // 切換 前端/後端 檢視
         function toggleView() {
             const userSec = document.getElementById('userSection');
             const adminSec = document.getElementById('adminSection');
@@ -157,10 +178,22 @@
             } else {
                 userSec.classList.add('hidden');
                 adminSec.classList.remove('hidden');
-                btn.textContent = '切換至前端申請檢視';
-                btn.className = 'bg-amber-700 hover:bg-amber-800 px-6 py-3 rounded-xl text-lg font-bold transition shadow';
+                btn.textContent = '目前在後端管理模式';
+                btn.className = 'bg-amber-700 text-white px-6 py-3 rounded-xl text-lg font-bold shadow cursor-default';
                 renderAdminList();
             }
+        }
+
+        // 從後台返回前端
+        function returnToUserView() {
+            const userSec = document.getElementById('userSection');
+            const adminSec = document.getElementById('adminSection');
+            const btn = document.getElementById('switchBtn');
+
+            userSec.classList.remove('hidden');
+            adminSec.classList.add('hidden');
+            btn.textContent = '切換至後端管理檢視';
+            btn.className = 'bg-emerald-800 hover:bg-emerald-900 px-6 py-3 rounded-xl text-lg font-bold transition shadow';
         }
 
         function handleFormSubmit(e) {
@@ -237,7 +270,6 @@
                 req.status = status;
                 req.reply = reply;
 
-                // 若有填寫回覆內容，自動記錄當前回覆時間；若清空回覆則同時清空回覆時間
                 if (reply.trim() !== '') {
                     const now = new Date();
                     req.replyTime = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
@@ -300,7 +332,7 @@
                             ${req.photo ? `<div><img src="${req.photo}" class="w-36 h-36 object-cover rounded-xl border-2 shadow-sm"></div>` : ''}
                         </div>
                         
-                        <!-- 回覆顯示區 (含回覆時間) -->
+                        <!-- 回覆顯示區 -->
                         <div class="bg-emerald-50 p-5 rounded-xl border-2 border-emerald-200 text-lg mt-2 space-y-2">
                             <div class="flex justify-between items-center">
                                 <strong class="text-emerald-900 text-base font-bold">📢 處室回覆結果：</strong>
@@ -354,7 +386,6 @@
                     <td class="p-5 space-y-3 min-w-[260px]">
                         <textarea id="reply-${req.id}" rows="2" class="w-full border-2 border-slate-300 rounded-xl px-3.5 py-2.5 text-lg outline-none focus:ring-1 focus:ring-amber-500 font-medium" placeholder="輸入回覆結果...">${req.reply || ''}</textarea>
                         
-                        <!-- 顯示上次回覆時間提示 -->
                         <div class="text-xs text-slate-500 font-semibold">
                             ${req.replyTime ? '上次回覆：' + req.replyTime : '尚未回覆'}
                         </div>
