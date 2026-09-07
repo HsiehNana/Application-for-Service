@@ -97,11 +97,11 @@
         <!-- ==================== 後端：依填報順序清單與案件管理 ==================== -->
         <section id="adminSection" class="hidden space-y-6">
             <div class="bg-amber-50 border border-amber-200 p-4 sm:p-5 rounded-2xl text-amber-900 text-sm sm:text-base flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 shadow-sm">
-                <span>🛠️ <strong>後端管理模式：</strong> 依填報順序顯示所有案件，可勾選多位回覆人員、調整優先順序、狀態與回覆。</span>
+                <span>🛠️ <strong>後端管理模式：</strong> 可隨時新增不同時間與人員的回覆留言、調整優先順序與狀態。</span>
                 <span id="totalCountBadge" class="bg-amber-200 px-3 py-1 rounded-full font-bold text-xs sm:text-sm whitespace-nowrap">總案件數：0</span>
             </div>
 
-            <!-- 電腦版表格檢視 (隱藏於小螢幕) -->
+            <!-- 電腦版表格檢視 -->
             <div class="hidden md:block bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                 <div class="p-5 bg-slate-100 border-b font-bold text-slate-800 text-base sm:text-lg flex justify-between items-center">
                     <span>📂 勞務申請依序管理清單</span>
@@ -118,7 +118,7 @@
                                 <th class="p-4">申請內容</th>
                                 <th class="p-4">優先順序</th>
                                 <th class="p-4">狀態</th>
-                                <th class="p-4 min-w-[280px]">回覆與管理</th>
+                                <th class="p-4 min-w-[320px]">回覆紀錄與新增</th>
                             </tr>
                         </thead>
                         <tbody id="adminTableBody" class="divide-y divide-slate-200 text-sm sm:text-base">
@@ -128,7 +128,7 @@
                 </div>
             </div>
 
-            <!-- 手機版卡片管理檢視 (隱藏於電腦螢幕) -->
+            <!-- 手機版卡片管理檢視 -->
             <div class="md:hidden space-y-4">
                 <div class="flex justify-between items-center bg-white p-4 rounded-xl border shadow-sm">
                     <span class="font-bold text-slate-800">📂 手機後台管理清單</span>
@@ -159,9 +159,10 @@
                 photo: null,
                 priority: '中', 
                 status: '處理中', 
-                reply: '已排定於本週五進行清運。',
-                replyTime: '2026-06-08 14:20',
-                repliers: ['凃總', '邱帥']
+                replies: [
+                    { replier: '凃總', text: '已收到申請，將安排人員場勘。', time: '2026-06-08 11:00' },
+                    { replier: '邱帥', text: '已排定於本週五進行清運。', time: '2026-06-08 14:20' }
+                ]
             }
         ];
 
@@ -251,9 +252,7 @@
                 photo,
                 priority: '中', 
                 status: '待處理', 
-                reply: '',
-                replyTime: '',
-                repliers: []
+                replies: [] // 初始化為空回覆串
             };
 
             requests.unshift(newReq); 
@@ -281,32 +280,62 @@
             renderUserList();
         }
 
-        function updateRequest(id) {
+        // 新增一筆回覆留言
+        function addReply(id) {
+            const replier = document.getElementById(`new-replier-${id}`).value;
+            const text = document.getElementById(`new-reply-text-${id}`).value.trim();
+
+            if (!replier) {
+                alert('請選擇回覆人員！');
+                return;
+            }
+            if (!text) {
+                alert('請輸入回覆內容！');
+                return;
+            }
+
+            const req = requests.find(r => r.id === id);
+            if (req) {
+                const now = new Date();
+                const timeStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+                if (!req.replies) req.replies = [];
+                req.replies.push({
+                    replier: replier,
+                    text: text,
+                    time: timeStr
+                });
+
+                syncStorage();
+                alert('回覆已成功送出！');
+                render();
+            }
+        }
+
+        // 更新狀態與優先順序
+        function updateRequestMeta(id) {
             const priority = document.getElementById(`priority-${id}`).value;
             const status = document.getElementById(`status-${id}`).value;
-            const reply = document.getElementById(`reply-${id}`).value;
-
-            const checkboxes = document.querySelectorAll(`.replier-checkbox-${id}:checked`);
-            const repliers = Array.from(checkboxes).map(cb => cb.value);
 
             const req = requests.find(r => r.id === id);
             if (req) {
                 req.priority = priority;
                 req.status = status;
-                req.repliers = repliers;
-                req.reply = reply;
-
-                if (reply.trim() !== '') {
-                    const now = new Date();
-                    req.replyTime = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-                } else {
-                    req.replyTime = '';
-                    req.repliers = [];
-                }
-
                 syncStorage();
-                alert('案件回覆與狀態更新成功！');
+                alert('狀態與優先順序更新成功！');
                 render();
+            }
+        }
+
+        // 刪除單一回覆紀錄
+        function deleteReply(reqId, replyIndex) {
+            if (confirm('確定要刪除這則回覆嗎？')) {
+                const req = requests.find(r => r.id === reqId);
+                if (req && req.replies) {
+                    req.replies.splice(replyIndex, 1);
+                    syncStorage();
+                    render();
+                }
             }
         }
 
@@ -341,7 +370,21 @@
                 if (req.status === '處理中') badgeColor = 'bg-blue-100 text-blue-800';
                 if (req.status === '已完成') badgeColor = 'bg-green-100 text-green-800';
 
-                const replierText = req.repliers && req.repliers.length > 0 ? req.repliers.join('、') + ' 處室回覆' : '處室回覆結果';
+                // 產生回覆歷史紀錄串
+                let repliesHtml = '';
+                if (req.replies && req.replies.length > 0) {
+                    repliesHtml = req.replies.map(rep => `
+                        <div class="bg-white p-3 rounded-xl border border-emerald-100 space-y-1 shadow-2xs">
+                            <div class="flex justify-between items-center text-xs font-bold text-emerald-800">
+                                <span>🗣️ ${rep.replier} 老師/同仁回覆</span>
+                                <span class="text-slate-400 font-normal">${rep.time}</span>
+                            </div>
+                            <p class="text-slate-800 text-sm sm:text-base font-medium whitespace-pre-line">${rep.text}</p>
+                        </div>
+                    `).join('');
+                } else {
+                    repliesHtml = `<p class="text-slate-400 italic text-sm">尚在處理中，暫無回覆...</p>`;
+                }
 
                 return `
                     <div class="border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-3.5 bg-white shadow-sm flex flex-col justify-between">
@@ -361,13 +404,10 @@
                             ${req.photo ? `<div><img src="${req.photo}" class="w-32 h-32 object-cover rounded-xl border shadow-sm"></div>` : ''}
                         </div>
                         
-                        <!-- 回覆顯示區 -->
-                        <div class="bg-emerald-50/80 p-4 rounded-xl border border-emerald-200 text-sm sm:text-base mt-2 space-y-1.5">
-                            <div class="flex flex-wrap justify-between items-center gap-1">
-                                <strong class="text-emerald-900 text-xs sm:text-sm font-bold">📢 ${replierText}：</strong>
-                                <span class="text-[11px] sm:text-xs text-slate-500 font-semibold">${req.replyTime ? '回覆時間：' + req.replyTime : ''}</span>
-                            </div>
-                            <p class="text-slate-900 leading-relaxed font-medium">${req.reply ? req.reply : '<span class="text-slate-400 italic">尚在處理中，暫無回覆...</span>'}</p>
+                        <!-- 回覆歷史清單 -->
+                        <div class="bg-emerald-50/70 p-4 rounded-xl border border-emerald-200 text-sm sm:text-base mt-2 space-y-2.5">
+                            <strong class="text-emerald-900 text-xs sm:text-sm font-bold block mb-1">📢 處室回覆紀錄：</strong>
+                            <div class="space-y-2">${repliesHtml}</div>
                         </div>
                     </div>
                 `;
@@ -384,14 +424,24 @@
                 return;
             }
 
+            let replierOptions = availableRepliers.map(name => `<option value="${name}">${name}</option>`).join('');
+
             tbody.innerHTML = requests.map((req, index) => {
-                let replierCheckboxes = availableRepliers.map(name => {
-                    const isChecked = req.repliers && req.repliers.includes(name) ? 'checked' : '';
-                    return `<label class="inline-flex items-center space-x-1 cursor-pointer bg-white px-2 py-1 rounded border border-slate-200 text-xs font-bold">
-                        <input type="checkbox" value="${name}" ${isChecked} class="replier-checkbox-${req.id} rounded text-amber-600 focus:ring-amber-500">
-                        <span>${name}</span>
-                    </label>`;
-                }).join('');
+                // 後台顯示已有的回覆串（含刪除個別回覆按鈕）
+                let adminRepliesHtml = '';
+                if (req.replies && req.replies.length > 0) {
+                    adminRepliesHtml = req.replies.map((rep, rIndex) => `
+                        <div class="bg-slate-50 p-2 rounded border text-xs space-y-1">
+                            <div class="flex justify-between font-bold text-slate-700">
+                                <span>${rep.replier} (${rep.time})</span>
+                                <button onclick="deleteReply(${req.id}, ${rIndex})" class="text-red-500 hover:text-red-700">刪除此則</button>
+                            </div>
+                            <p class="text-slate-600">${rep.text}</p>
+                        </div>
+                    `).join('');
+                } else {
+                    adminRepliesHtml = `<span class="text-xs text-slate-400 italic">尚未有回覆紀錄</span>`;
+                }
 
                 return `
                     <tr class="hover:bg-slate-50 transition align-top">
@@ -409,39 +459,39 @@
                             ${req.photo ? `<img src="${req.photo}" class="w-20 h-20 object-cover rounded-xl mt-2 border shadow-sm">` : ''}
                         </td>
                         <td class="p-4">
-                            <select id="priority-${req.id}" class="border border-slate-300 rounded-xl px-2 py-1.5 text-xs sm:text-sm font-bold outline-none bg-white">
+                            <select id="priority-${req.id}" onchange="updateRequestMeta(${req.id})" class="border border-slate-300 rounded-xl px-2 py-1.5 text-xs sm:text-sm font-bold outline-none bg-white">
                                 <option value="高" ${req.priority === '高' ? 'selected' : ''}>高</option>
                                 <option value="中" ${req.priority === '中' ? 'selected' : ''}>中</option>
                                 <option value="低" ${req.priority === '低' ? 'selected' : ''}>低</option>
                             </select>
                         </td>
                         <td class="p-4">
-                            <select id="status-${req.id}" class="border border-slate-300 rounded-xl px-2 py-1.5 text-xs sm:text-sm font-bold outline-none bg-white">
+                            <select id="status-${req.id}" onchange="updateRequestMeta(${req.id})" class="border border-slate-300 rounded-xl px-2 py-1.5 text-xs sm:text-sm font-bold outline-none bg-white">
                                 <option value="待處理" ${req.status === '待處理' ? 'selected' : ''}>待處理</option>
                                 <option value="處理中" ${req.status === '處理中' ? 'selected' : ''}>處理中</option>
                                 <option value="已完成" ${req.status === '已完成' ? 'selected' : ''}>已完成</option>
                             </select>
                         </td>
-                        <td class="p-4 space-y-2.5">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-600 mb-1">回覆人員 (可複選)</label>
-                                <div class="flex flex-wrap gap-1.5">${replierCheckboxes}</div>
-                            </div>
+                        <td class="p-4 space-y-3">
+                            <!-- 歷史回覆列表 -->
+                            <div class="space-y-1.5 max-h-40 overflow-y-auto pr-1">${adminRepliesHtml}</div>
 
-                            <div>
-                                <textarea id="reply-${req.id}" rows="2" class="w-full border border-slate-300 rounded-xl p-2 text-xs sm:text-sm outline-none font-medium" placeholder="輸入回覆結果...">${req.reply || ''}</textarea>
-                            </div>
-                            
-                            <div class="text-[11px] text-slate-500 font-semibold">
-                                ${req.replyTime ? '上次回覆：' + req.replyTime : '尚未回覆'}
-                            </div>
-
-                            <div class="flex justify-between items-center pt-1">
-                                <button onclick="updateRequest(${req.id})" class="bg-amber-600 hover:bg-amber-700 text-white text-xs sm:text-sm font-bold px-4 py-1.5 rounded-xl transition shadow">
-                                    儲存回覆
+                            <!-- 新增回覆區塊 -->
+                            <div class="bg-amber-50/60 p-2.5 rounded-xl border border-amber-200 space-y-2">
+                                <div class="text-xs font-bold text-amber-900">➕ 新增一筆回覆：</div>
+                                <select id="new-replier-${req.id}" class="w-full border rounded-lg p-1.5 text-xs font-bold bg-white">
+                                    <option value="">請選擇回覆人員</option>
+                                    ${replierOptions}
+                                </select>
+                                <textarea id="new-reply-text-${req.id}" rows="2" class="w-full border rounded-lg p-1.5 text-xs outline-none" placeholder="輸入回覆內容..."></textarea>
+                                <button onclick="addReply(${req.id})" class="w-full bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold py-1.5 rounded-lg transition shadow">
+                                    送出此則回覆
                                 </button>
+                            </div>
+
+                            <div class="flex justify-end pt-1">
                                 <button onclick="deleteRequest(${req.id})" class="text-red-600 hover:text-red-800 text-xs font-bold">
-                                    刪除
+                                    刪除整筆案件
                                 </button>
                             </div>
                         </td>
@@ -449,15 +499,23 @@
                 `;
             }).join('');
 
+            // 手機版卡片後台
             const cardContainer = document.getElementById('adminCardList');
             cardContainer.innerHTML = requests.map((req, index) => {
-                let replierCheckboxesMobile = availableRepliers.map(name => {
-                    const isChecked = req.repliers && req.repliers.includes(name) ? 'checked' : '';
-                    return `<label class="inline-flex items-center space-x-1 bg-white px-2 py-1 rounded border text-xs font-bold">
-                        <input type="checkbox" value="${name}" ${isChecked} class="replier-checkbox-${req.id} rounded text-amber-600">
-                        <span>${name}</span>
-                    </label>`;
-                }).join('');
+                let adminRepliesMobile = '';
+                if (req.replies && req.replies.length > 0) {
+                    adminRepliesMobile = req.replies.map((rep, rIndex) => `
+                        <div class="bg-slate-50 p-2 rounded border text-xs space-y-1">
+                            <div class="flex justify-between font-bold text-slate-700">
+                                <span>${rep.replier} (${rep.time})</span>
+                                <button onclick="deleteReply(${req.id}, ${rIndex})" class="text-red-500">刪除</button>
+                            </div>
+                            <p>${rep.text}</p>
+                        </div>
+                    `).join('');
+                } else {
+                    adminRepliesMobile = `<span class="text-xs text-slate-400">尚無回覆紀錄</span>`;
+                }
 
                 return `
                     <div class="bg-white border rounded-2xl p-4 space-y-3 shadow-sm">
@@ -471,7 +529,7 @@
                         <div class="grid grid-cols-2 gap-2">
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-500 mb-1">優先順序</label>
-                                <select id="priority-${req.id}" class="w-full border rounded-lg p-1.5 text-xs font-bold bg-white">
+                                <select id="priority-${req.id}" onchange="updateRequestMeta(${req.id})" class="w-full border rounded-lg p-1.5 text-xs font-bold bg-white">
                                     <option value="高" ${req.priority === '高' ? 'selected' : ''}>高</option>
                                     <option value="中" ${req.priority === '中' ? 'selected' : ''}>中</option>
                                     <option value="低" ${req.priority === '低' ? 'selected' : ''}>低</option>
@@ -479,7 +537,7 @@
                             </div>
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-500 mb-1">處理狀態</label>
-                                <select id="status-${req.id}" class="w-full border rounded-lg p-1.5 text-xs font-bold bg-white">
+                                <select id="status-${req.id}" onchange="updateRequestMeta(${req.id})" class="w-full border rounded-lg p-1.5 text-xs font-bold bg-white">
                                     <option value="待處理" ${req.status === '待處理' ? 'selected' : ''}>待處理</option>
                                     <option value="處理中" ${req.status === '處理中' ? 'selected' : ''}>處理中</option>
                                     <option value="已完成" ${req.status === '已完成' ? 'selected' : ''}>已完成</option>
@@ -487,25 +545,23 @@
                             </div>
                         </div>
 
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-500 mb-1">回覆人員 (可複選)</label>
-                            <div class="flex flex-wrap gap-1">${replierCheckboxesMobile}</div>
-                        </div>
+                        <div class="space-y-1.5">${adminRepliesMobile}</div>
 
-                        <div>
-                            <textarea id="reply-${req.id}" rows="2" class="w-full border rounded-lg p-2 text-xs" placeholder="輸入回覆結果...">${req.reply || ''}</textarea>
-                        </div>
-
-                        <div class="text-[11px] text-slate-500">
-                            ${req.replyTime ? '上次回覆：' + req.replyTime : '尚未回覆'}
+                        <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 space-y-2">
+                            <div class="text-xs font-bold text-amber-900">➕ 新增回覆：</div>
+                            <select id="new-replier-${req.id}" class="w-full border rounded-lg p-1.5 text-xs font-bold bg-white">
+                                <option value="">請選擇回覆人員</option>
+                                ${replierOptions}
+                            </select>
+                            <textarea id="new-reply-text-${req.id}" rows="2" class="w-full border rounded-lg p-1.5 text-xs" placeholder="輸入回覆內容..."></textarea>
+                            <button onclick="addReply(${req.id})" class="w-full bg-amber-600 text-white text-xs font-bold py-2 rounded-lg">
+                                送出回覆
+                            </button>
                         </div>
 
                         <div class="flex justify-between items-center pt-2 border-t">
-                            <button onclick="updateRequest(${req.id})" class="bg-amber-600 text-white text-xs font-bold px-4 py-2 rounded-lg">
-                                儲存回覆
-                            </button>
                             <button onclick="deleteRequest(${req.id})" class="text-red-600 text-xs font-bold">
-                                刪除
+                                刪除整筆案件
                             </button>
                         </div>
                     </div>
