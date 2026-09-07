@@ -4,39 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>二苓國小 - 處室勞務申請系統</title>
-    <!-- 引入 Tailwind CSS 快速美化介面 -->
+    <!-- 引入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-50 text-slate-900 text-lg">
+<body class="bg-slate-50 text-slate-800 text-sm md:text-base">
 
     <!-- 頁首 -->
     <header class="bg-emerald-700 text-white shadow-md">
-        <div class="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center">
-            <h1 class="text-3xl font-bold">🏫 高雄市小港區二苓國民小學 - 處室勞務申請系統</h1>
-            <button onclick="checkAdminPassword()" id="switchBtn" class="bg-emerald-800 hover:bg-emerald-900 px-6 py-3 rounded-xl text-lg font-bold transition shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <h1 class="text-lg sm:text-2xl font-bold text-center sm:text-left">🏫 高雄市小港區二苓國民小學<br class="sm:hidden"> 處室勞務申請系統</h1>
+            <button onclick="checkAdminPassword()" id="switchBtn" class="bg-emerald-800 hover:bg-emerald-900 px-4 py-2 rounded-xl text-sm sm:text-base font-bold transition shadow whitespace-nowrap">
                 切換至後端管理檢視
             </button>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-6 py-10">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
         <!-- ==================== 前端：填寫申請與處室進度清單 ==================== -->
-        <section id="userSection" class="space-y-10">
+        <section id="userSection" class="space-y-6 sm:space-y-8">
             <!-- 填寫表單 -->
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
-                <h2 class="text-2xl font-bold text-emerald-700 mb-6 border-b pb-4">📝 填寫新的勞務申請 <span class="text-base text-red-500 font-normal">（所有欄位皆為必填）</span></h2>
-                <form id="applyForm" onsubmit="handleFormSubmit(event)" class="space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white p-5 sm:p-8 rounded-2xl shadow-sm border border-slate-200">
+                <h2 class="text-base sm:text-xl font-bold text-emerald-700 mb-4 sm:mb-6 border-b pb-3 flex flex-wrap justify-between items-center gap-2">
+                    <span>📝 填寫新的勞務申請</span>
+                    <span class="text-xs sm:text-sm text-red-500 font-normal">（所有欄位皆為必填）</span>
+                </h2>
+                <form id="applyForm" onsubmit="handleFormSubmit(event)" class="space-y-4 sm:space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
                         <!-- 日期 -->
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-slate-700">申請日期 <span class="text-red-500">*</span></label>
-                            <input type="date" id="applyDate" required class="w-full border-2 border-slate-300 rounded-xl px-4 py-3.5 text-lg focus:ring-2 focus:ring-emerald-500 outline-none">
+                            <label class="block text-sm sm:text-base font-bold mb-1.5 text-slate-700">申請日期 <span class="text-red-500">*</span></label>
+                            <input type="date" id="applyDate" required class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm sm:text-base focus:ring-2 focus:ring-emerald-500 outline-none">
                         </div>
                         <!-- 處室選擇 -->
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-slate-700">申請處室 <span class="text-red-500">*</span></label>
-                            <select id="applyOffice" required class="w-full border-2 border-slate-300 rounded-xl px-4 py-3.5 text-lg focus:ring-2 focus:ring-emerald-500 outline-none bg-white">
+                            <label class="block text-sm sm:text-base font-bold mb-1.5 text-slate-700">申請處室 <span class="text-red-500">*</span></label>
+                            <select id="applyOffice" required class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm sm:text-base focus:ring-2 focus:ring-emerald-500 outline-none bg-white">
                                 <option value="">請選擇處室</option>
                                 <option value="教務處">教務處</option>
                                 <option value="學務處">學務處</option>
@@ -45,45 +48,45 @@
                             </select>
                         </div>
                         <!-- 地點填寫 -->
-                        <div>
-                            <label class="block text-lg font-bold mb-2 text-slate-700">勞務地點 <span class="text-red-500">*</span></label>
-                            <input type="text" id="applyLocation" required placeholder="例如：三樓電腦教室、操場" class="w-full border-2 border-slate-300 rounded-xl px-4 py-3.5 text-lg focus:ring-2 focus:ring-emerald-500 outline-none">
+                        <div class="sm:col-span-2 md:col-span-1">
+                            <label class="block text-sm sm:text-base font-bold mb-1.5 text-slate-700">勞務地點 <span class="text-red-500">*</span></label>
+                            <input type="text" id="applyLocation" required placeholder="例如：三樓電腦教室" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm sm:text-base focus:ring-2 focus:ring-emerald-500 outline-none">
                         </div>
                     </div>
 
                     <!-- 申請內容文字 -->
                     <div>
-                        <label class="block text-lg font-bold mb-2 text-slate-700">申請內容說明 <span class="text-red-500">*</span></label>
-                        <textarea id="applyContent" rows="4" required placeholder="請詳細描述需要協助的勞務內容..." class="w-full border-2 border-slate-300 rounded-xl px-4 py-3.5 text-lg focus:ring-2 focus:ring-emerald-500 outline-none"></textarea>
+                        <label class="block text-sm sm:text-base font-bold mb-1.5 text-slate-700">申請內容說明 <span class="text-red-500">*</span></label>
+                        <textarea id="applyContent" rows="3" required placeholder="請詳細描述需要協助的勞務內容..." class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm sm:text-base focus:ring-2 focus:ring-emerald-500 outline-none"></textarea>
                     </div>
 
                     <!-- 照片上傳 -->
                     <div>
-                        <label class="block text-lg font-bold mb-2 text-slate-700">相關照片（可選）</label>
-                        <input type="file" id="applyPhoto" accept="image/*" class="w-full border-2 border-slate-300 rounded-xl px-4 py-3 text-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-base file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
+                        <label class="block text-sm sm:text-base font-bold mb-1.5 text-slate-700">相關照片（可選）</label>
+                        <input type="file" id="applyPhoto" accept="image/*" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm sm:text-base file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs sm:file:text-sm file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
                     </div>
 
-                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl text-xl transition shadow-md">
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl text-base sm:text-lg transition shadow-md">
                         送出申請
                     </button>
                 </form>
             </div>
 
             <!-- 前端：各處室目前申請內容與時間列表 -->
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
+            <div class="bg-white p-5 sm:p-8 rounded-2xl shadow-sm border border-slate-200">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b pb-4 gap-4">
-                    <h2 class="text-2xl font-bold text-emerald-700">📋 各處室目前申請進度與內容</h2>
+                    <h2 class="text-base sm:text-xl font-bold text-emerald-700">📋 各處室目前申請進度與內容</h2>
                     <!-- 處室篩選按鈕 -->
-                    <div class="flex flex-wrap items-center gap-2">
-                        <span class="text-slate-700 text-base font-bold mr-1">篩選處室：</span>
-                        <button onclick="filterOffice('全部')" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-base font-bold filter-btn shadow" data-office="全部">全部</button>
-                        <button onclick="filterOffice('教務處')" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-xl text-base font-bold filter-btn" data-office="教務處">教務處</button>
-                        <button onclick="filterOffice('學務處')" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-xl text-base font-bold filter-btn" data-office="學務處">學務處</button>
-                        <button onclick="filterOffice('輔導室')" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-xl text-base font-bold filter-btn" data-office="輔導室">輔導室</button>
-                        <button onclick="filterOffice('總務處')" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-xl text-base font-bold filter-btn" data-office="總務處">總務處</button>
+                    <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 w-full md:w-auto">
+                        <span class="text-slate-600 text-xs sm:text-sm font-bold mr-1">篩選：</span>
+                        <button onclick="filterOffice('全部')" class="px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs sm:text-sm font-bold filter-btn shadow-sm" data-office="全部">全部</button>
+                        <button onclick="filterOffice('教務處')" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs sm:text-sm font-bold filter-btn" data-office="教務處">教務處</button>
+                        <button onclick="filterOffice('學務處')" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs sm:text-sm font-bold filter-btn" data-office="學務處">學務處</button>
+                        <button onclick="filterOffice('輔導室')" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs sm:text-sm font-bold filter-btn" data-office="輔導室">輔導室</button>
+                        <button onclick="filterOffice('總務處')" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs sm:text-sm font-bold filter-btn" data-office="總務處">總務處</button>
                     </div>
                 </div>
-                <div id="userRequestList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div id="userRequestList" class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                     <!-- 動態帶入 -->
                 </div>
             </div>
@@ -91,34 +94,48 @@
 
         <!-- ==================== 後端：依填報順序清單與案件管理 ==================== -->
         <section id="adminSection" class="hidden space-y-6">
-            <div class="bg-amber-50 border-2 border-amber-200 p-6 rounded-2xl text-amber-900 text-lg flex justify-between items-center shadow-sm">
-                <span>🛠️ <strong>後端管理模式：</strong> 依填報順序顯示所有案件，可隨時調整優先順序、狀態並填寫回覆。</span>
-                <span id="totalCountBadge" class="bg-amber-200 px-5 py-2 rounded-full font-bold text-base">總案件數：0</span>
+            <div class="bg-amber-50 border border-amber-200 p-4 sm:p-5 rounded-2xl text-amber-900 text-sm sm:text-base flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 shadow-sm">
+                <span>🛠️ <strong>後端管理模式：</strong> 依填報順序顯示所有案件，可勾選多位回覆人員、調整優先順序、狀態與回覆。</span>
+                <span id="totalCountBadge" class="bg-amber-200 px-3 py-1 rounded-full font-bold text-xs sm:text-sm whitespace-nowrap">總案件數：0</span>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="p-6 bg-slate-100 border-b font-bold text-slate-800 text-xl flex justify-between items-center">
+            <!-- 電腦版表格檢視 (隱藏於小螢幕) -->
+            <div class="hidden md:block bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-5 bg-slate-100 border-b font-bold text-slate-800 text-base sm:text-lg flex justify-between items-center">
                     <span>📂 勞務申請依序管理清單</span>
-                    <button onclick="returnToUserView()" class="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-xl text-base">
+                    <button onclick="returnToUserView()" class="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-xl text-sm font-bold">
                         返回前端申請畫面
                     </button>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-slate-100 text-slate-800 text-base font-bold border-b">
-                                <th class="p-5">序號 / 填報時間</th>
-                                <th class="p-5">處室 / 地點</th>
-                                <th class="p-5">申請內容</th>
-                                <th class="p-5">優先順序</th>
-                                <th class="p-5">狀態</th>
-                                <th class="p-5">回覆與管理</th>
+                            <tr class="bg-slate-100 text-slate-800 text-xs sm:text-sm font-bold border-b">
+                                <th class="p-4">序號 / 時間</th>
+                                <th class="p-4">處室 / 地點</th>
+                                <th class="p-4">申請內容</th>
+                                <th class="p-4">優先順序</th>
+                                <th class="p-4">狀態</th>
+                                <th class="p-4 min-w-[280px]">回覆與管理</th>
                             </tr>
                         </thead>
-                        <tbody id="adminTableBody" class="divide-y divide-slate-200 text-lg">
+                        <tbody id="adminTableBody" class="divide-y divide-slate-200 text-sm sm:text-base">
                             <!-- 動態帶入 -->
                         </tbody>
                     </table>
+                </div>
+            </div>
+
+            <!-- 手機版卡片管理檢視 (隱藏於電腦螢幕) -->
+            <div class="md:hidden space-y-4">
+                <div class="flex justify-between items-center bg-white p-4 rounded-xl border shadow-sm">
+                    <span class="font-bold text-slate-800">📂 手機後台管理清單</span>
+                    <button onclick="returnToUserView()" class="bg-slate-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
+                        返回前端
+                    </button>
+                </div>
+                <div id="adminCardList" class="space-y-4">
+                    <!-- 動態帶入 -->
                 </div>
             </div>
         </section>
@@ -127,6 +144,8 @@
 
     <!-- JavaScript 邏輯 -->
     <script>
+        const availableRepliers = ['凃總', '邱帥', '沈帥', '侯大', '楊大'];
+
         let requests = JSON.parse(localStorage.getItem('eLingRequests')) || [
             {
                 id: 1,
@@ -140,7 +159,7 @@
                 status: '處理中', 
                 reply: '已排定於本週五進行清運。',
                 replyTime: '2026-06-08 14:20',
-                replier: '凃總'
+                repliers: ['凃總', '邱帥'] // 支援多位回覆人員
             }
         ];
 
@@ -149,7 +168,7 @@
 
         document.getElementById('applyDate').value = new Date().toISOString().split('T')[0];
 
-        // 檢查後台密碼 (改為 311)
+        // 檢查後台密碼 (設為 311)
         function checkAdminPassword() {
             if (isAdminLoggedIn) {
                 toggleView();
@@ -175,17 +194,16 @@
                 userSec.classList.remove('hidden');
                 adminSec.classList.add('hidden');
                 btn.textContent = '切換至後端管理檢視';
-                btn.className = 'bg-emerald-800 hover:bg-emerald-900 px-6 py-3 rounded-xl text-lg font-bold transition shadow';
+                btn.className = 'bg-emerald-800 hover:bg-emerald-900 px-4 py-2 rounded-xl text-sm sm:text-base font-bold transition shadow';
             } else {
                 userSec.classList.add('hidden');
                 adminSec.classList.remove('hidden');
                 btn.textContent = '目前在後端管理模式';
-                btn.className = 'bg-amber-700 text-white px-6 py-3 rounded-xl text-lg font-bold shadow cursor-default';
+                btn.className = 'bg-amber-700 text-white px-4 py-2 rounded-xl text-sm sm:text-base font-bold shadow cursor-default';
                 renderAdminList();
             }
         }
 
-        // 從後台返回前端
         function returnToUserView() {
             const userSec = document.getElementById('userSection');
             const adminSec = document.getElementById('adminSection');
@@ -194,7 +212,7 @@
             userSec.classList.remove('hidden');
             adminSec.classList.add('hidden');
             btn.textContent = '切換至後端管理檢視';
-            btn.className = 'bg-emerald-800 hover:bg-emerald-900 px-6 py-3 rounded-xl text-lg font-bold transition shadow';
+            btn.className = 'bg-emerald-800 hover:bg-emerald-900 px-4 py-2 rounded-xl text-sm sm:text-base font-bold transition shadow';
         }
 
         function handleFormSubmit(e) {
@@ -233,7 +251,7 @@
                 status: '待處理', 
                 reply: '',
                 replyTime: '',
-                replier: ''
+                repliers: []
             };
 
             requests.unshift(newReq); 
@@ -253,9 +271,9 @@
             
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 if(btn.getAttribute('data-office') === officeName) {
-                    btn.className = 'px-4 py-2 bg-emerald-600 text-white rounded-xl text-base font-bold filter-btn shadow';
+                    btn.className = 'px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs sm:text-sm font-bold filter-btn shadow-sm';
                 } else {
-                    btn.className = 'px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-xl text-base font-bold filter-btn';
+                    btn.className = 'px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs sm:text-sm font-bold filter-btn';
                 }
             });
             renderUserList();
@@ -264,14 +282,17 @@
         function updateRequest(id) {
             const priority = document.getElementById(`priority-${id}`).value;
             const status = document.getElementById(`status-${id}`).value;
-            const replier = document.getElementById(`replier-${id}`).value;
             const reply = document.getElementById(`reply-${id}`).value;
+
+            // 收集所有被勾選的回覆人員
+            const checkboxes = document.querySelectorAll(`.replier-checkbox-${id}:checked`);
+            const repliers = Array.from(checkboxes).map(cb => cb.value);
 
             const req = requests.find(r => r.id === id);
             if (req) {
                 req.priority = priority;
                 req.status = status;
-                req.replier = replier;
+                req.repliers = repliers;
                 req.reply = reply;
 
                 if (reply.trim() !== '') {
@@ -279,7 +300,7 @@
                     req.replyTime = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
                 } else {
                     req.replyTime = '';
-                    req.replier = '';
+                    req.repliers = [];
                 }
 
                 syncStorage();
@@ -310,7 +331,7 @@
             }
 
             if (filtered.length === 0) {
-                container.innerHTML = `<p class="text-slate-400 text-center col-span-2 py-12 text-xl">目前沒有符合條件的申請紀錄。</p>`;
+                container.innerHTML = `<p class="text-slate-400 text-center col-span-2 py-10 text-base sm:text-lg">目前沒有符合條件的申請紀錄。</p>`;
                 return;
             }
 
@@ -319,29 +340,32 @@
                 if (req.status === '處理中') badgeColor = 'bg-blue-100 text-blue-800';
                 if (req.status === '已完成') badgeColor = 'bg-green-100 text-green-800';
 
+                // 組合多位回覆人員文字
+                const replierText = req.repliers && req.repliers.length > 0 ? req.repliers.join('、') + ' 處室回覆' : '處室回覆結果';
+
                 return `
-                    <div class="border-2 border-slate-200 rounded-2xl p-6 space-y-4 bg-white shadow-sm flex flex-col justify-between">
-                        <div class="space-y-3">
-                            <div class="flex justify-between items-start">
+                    <div class="border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-3.5 bg-white shadow-sm flex flex-col justify-between">
+                        <div class="space-y-2.5">
+                            <div class="flex justify-between items-start gap-2">
                                 <div>
-                                    <span class="bg-emerald-100 text-emerald-800 text-base font-bold px-3.5 py-1.5 rounded-xl">${req.office}</span>
-                                    <span class="text-base text-slate-700 ml-2 font-bold">📍 ${req.location}</span>
+                                    <span class="bg-emerald-100 text-emerald-800 text-xs sm:text-sm font-bold px-3 py-1 rounded-lg">${req.office}</span>
+                                    <span class="text-xs sm:text-sm text-slate-700 ml-1.5 font-bold">📍 ${req.location}</span>
                                 </div>
-                                <span class="text-base px-3.5 py-1.5 rounded-xl font-bold ${badgeColor}">${req.status}</span>
+                                <span class="text-xs sm:text-sm px-2.5 py-1 rounded-lg font-bold whitespace-nowrap ${badgeColor}">${req.status}</span>
                             </div>
-                            <div class="text-base text-slate-500 flex justify-between font-semibold">
-                                <span>填報時間：${req.submitTime}</span>
-                                <span class="text-emerald-700 font-bold">需求日期：${req.date}</span>
+                            <div class="text-xs sm:text-sm text-slate-500 flex flex-wrap justify-between gap-1 font-semibold">
+                                <span>填報：${req.submitTime}</span>
+                                <span class="text-emerald-700 font-bold">需用：${req.date}</span>
                             </div>
-                            <p class="text-slate-900 text-lg whitespace-pre-line bg-slate-50 p-4 rounded-xl border border-slate-200 leading-relaxed font-medium">${req.content}</p>
-                            ${req.photo ? `<div><img src="${req.photo}" class="w-36 h-36 object-cover rounded-xl border-2 shadow-sm"></div>` : ''}
+                            <p class="text-slate-900 text-sm sm:text-base whitespace-pre-line bg-slate-50 p-3.5 rounded-xl border border-slate-200 leading-relaxed font-medium">${req.content}</p>
+                            ${req.photo ? `<div><img src="${req.photo}" class="w-32 h-32 object-cover rounded-xl border shadow-sm"></div>` : ''}
                         </div>
                         
                         <!-- 回覆顯示區 -->
-                        <div class="bg-emerald-50 p-5 rounded-xl border-2 border-emerald-200 text-lg mt-2 space-y-2">
-                            <div class="flex justify-between items-center">
-                                <strong class="text-emerald-900 text-base font-bold">📢 ${req.replier ? req.replier + ' 處室回覆' : '處室回覆結果'}：</strong>
-                                <span class="text-xs text-slate-500 font-semibold">${req.replyTime ? '回覆時間：' + req.replyTime : ''}</span>
+                        <div class="bg-emerald-50/80 p-4 rounded-xl border border-emerald-200 text-sm sm:text-base mt-2 space-y-1.5">
+                            <div class="flex flex-wrap justify-between items-center gap-1">
+                                <strong class="text-emerald-900 text-xs sm:text-sm font-bold">📢 ${replierText}：</strong>
+                                <span class="text-[11px] sm:text-xs text-slate-500 font-semibold">${req.replyTime ? '回覆時間：' + req.replyTime : ''}</span>
                             </div>
                             <p class="text-slate-900 leading-relaxed font-medium">${req.reply ? req.reply : '<span class="text-slate-400 italic">尚在處理中，暫無回覆...</span>'}</p>
                         </div>
@@ -351,78 +375,145 @@
         }
 
         function renderAdminList() {
+            // 1. 渲染電腦版表格
             const tbody = document.getElementById('adminTableBody');
             document.getElementById('totalCountBadge').textContent = `總案件數：${requests.length}`;
 
             if (requests.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-12 text-slate-400 text-xl">目前沒有任何申請案件。</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-10 text-slate-400 text-base">目前沒有任何申請案件。</td></tr>`;
+                document.getElementById('adminCardList').innerHTML = `<p class="text-center py-10 text-slate-400">目前沒有任何申請案件。</p>`;
                 return;
             }
 
-            tbody.innerHTML = requests.map((req, index) => `
-                <tr class="hover:bg-slate-50 transition align-top">
-                    <td class="p-5 text-base text-slate-600 whitespace-nowrap">
-                        <div class="font-bold text-slate-900 text-lg">#${requests.length - index}</div>
-                        <div class="mt-1 font-medium">${req.submitTime}</div>
-                        <div class="text-emerald-700 mt-1 font-bold">需用：${req.date}</div>
-                    </td>
-                    <td class="p-5 whitespace-nowrap">
-                        <span class="bg-amber-100 text-amber-900 text-base font-bold px-3 py-1 rounded-xl block w-max mb-2">${req.office}</span>
-                        <span class="text-base text-slate-800 block font-bold">📍 ${req.location}</span>
-                    </td>
-                    <td class="p-5 max-w-sm">
-                        <p class="text-slate-900 text-lg leading-relaxed font-medium">${req.content}</p>
-                        ${req.photo ? `<img src="${req.photo}" class="w-24 h-24 object-cover rounded-xl mt-3 border-2 shadow-sm">` : ''}
-                    </td>
-                    <td class="p-5">
-                        <select id="priority-${req.id}" class="border-2 border-slate-300 rounded-xl px-3.5 py-2.5 text-lg font-bold outline-none focus:ring-1 focus:ring-amber-500 bg-white">
-                            <option value="高" ${req.priority === '高' ? 'selected' : ''}>高</option>
-                            <option value="中" ${req.priority === '中' ? 'selected' : ''}>中</option>
-                            <option value="低" ${req.priority === '低' ? 'selected' : ''}>低</option>
-                        </select>
-                    </td>
-                    <td class="p-5">
-                        <select id="status-${req.id}" class="border-2 border-slate-300 rounded-xl px-3.5 py-2.5 text-lg font-bold outline-none focus:ring-1 focus:ring-amber-500 bg-white">
-                            <option value="待處理" ${req.status === '待處理' ? 'selected' : ''}>待處理</option>
-                            <option value="處理中" ${req.status === '處理中' ? 'selected' : ''}>處理中</option>
-                            <option value="已完成" ${req.status === '已完成' ? 'selected' : ''}>已完成</option>
-                        </select>
-                    </td>
-                    <td class="p-5 space-y-3 min-w-[260px]">
-                        <!-- 回覆人員選單 -->
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 mb-1">回覆人員</label>
-                            <select id="replier-${req.id}" class="w-full border-2 border-slate-300 rounded-xl px-3 py-2 text-base font-bold outline-none focus:ring-1 focus:ring-amber-500 bg-white">
-                                <option value="">請選擇人員</option>
-                                <option value="凃總" ${req.replier === '凃總' ? 'selected' : ''}>凃總</option>
-                                <option value="邱帥" ${req.replier === '邱帥' ? 'selected' : ''}>邱帥</option>
-                                <option value="沈帥" ${req.replier === '沈帥' ? 'selected' : ''}>沈帥</option>
-                                <option value="侯大" ${req.replier === '侯大' ? 'selected' : ''}>侯大</option>
-                                <option value="楊大" ${req.replier === '楊大' ? 'selected' : ''}>楊大</option>
+            tbody.innerHTML = requests.map((req, index) => {
+                let replierCheckboxes = availableRepliers.map(name => {
+                    const isChecked = req.repliers && req.repliers.includes(name) ? 'checked' : '';
+                    return `<label class="inline-flex items-center space-x-1 cursor-pointer bg-white px-2 py-1 rounded border border-slate-200 text-xs font-bold">
+                        <input type="checkbox" value="${name}" ${isChecked} class="replier-checkbox-${req.id} rounded text-amber-600 focus:ring-amber-500">
+                        <span>${name}</span>
+                    </label>`;
+                }).join('');
+
+                return `
+                    <tr class="hover:bg-slate-50 transition align-top">
+                        <td class="p-4 text-xs sm:text-sm text-slate-600 whitespace-nowrap">
+                            <div class="font-bold text-slate-900 text-base">#${requests.length - index}</div>
+                            <div class="mt-1 font-medium">${req.submitTime}</div>
+                            <div class="text-emerald-700 mt-1 font-bold">需用：${req.date}</div>
+                        </td>
+                        <td class="p-4 whitespace-nowrap">
+                            <span class="bg-amber-100 text-amber-900 text-xs font-bold px-2.5 py-1 rounded-lg block w-max mb-1.5">${req.office}</span>
+                            <span class="text-xs sm:text-sm text-slate-800 block font-bold">📍 ${req.location}</span>
+                        </td>
+                        <td class="p-4 max-w-xs">
+                            <p class="text-slate-900 text-sm sm:text-base leading-relaxed font-medium">${req.content}</p>
+                            ${req.photo ? `<img src="${req.photo}" class="w-20 h-20 object-cover rounded-xl mt-2 border shadow-sm">` : ''}
+                        </td>
+                        <td class="p-4">
+                            <select id="priority-${req.id}" class="border border-slate-300 rounded-xl px-2 py-1.5 text-xs sm:text-sm font-bold outline-none bg-white">
+                                <option value="高" ${req.priority === '高' ? 'selected' : ''}>高</option>
+                                <option value="中" ${req.priority === '中' ? 'selected' : ''}>中</option>
+                                <option value="低" ${req.priority === '低' ? 'selected' : ''}>低</option>
                             </select>
+                        </td>
+                        <td class="p-4">
+                            <select id="status-${req.id}" class="border border-slate-300 rounded-xl px-2 py-1.5 text-xs sm:text-sm font-bold outline-none bg-white">
+                                <option value="待處理" ${req.status === '待處理' ? 'selected' : ''}>待處理</option>
+                                <option value="處理中" ${req.status === '處理中' ? 'selected' : ''}>處理中</option>
+                                <option value="已完成" ${req.status === '已完成' ? 'selected' : ''}>已完成</option>
+                            </select>
+                        </td>
+                        <td class="p-4 space-y-2.5">
+                            <!-- 多選回覆人員區塊 -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-1">回覆人員 (可複選)</label>
+                                <div class="flex flex-wrap gap-1.5">${replierCheckboxes}</div>
+                            </div>
+
+                            <div>
+                                <textarea id="reply-${req.id}" rows="2" class="w-full border border-slate-300 rounded-xl p-2 text-xs sm:text-sm outline-none font-medium" placeholder="輸入回覆結果...">${req.reply || ''}</textarea>
+                            </div>
+                            
+                            <div class="text-[11px] text-slate-500 font-semibold">
+                                ${req.replyTime ? '上次回覆：' + req.replyTime : '尚未回覆'}
+                            </div>
+
+                            <div class="flex justify-between items-center pt-1">
+                                <button onclick="updateRequest(${req.id})" class="bg-amber-600 hover:bg-amber-700 text-white text-xs sm:text-sm font-bold px-4 py-1.5 rounded-xl transition shadow">
+                                    儲存回覆
+                                </button>
+                                <button onclick="deleteRequest(${req.id})" class="text-red-600 hover:text-red-800 text-xs font-bold">
+                                    刪除
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            // 2. 渲染手機版卡片後台
+            const cardContainer = document.getElementById('adminCardList');
+            cardContainer.innerHTML = requests.map((req, index) => {
+                let replierCheckboxesMobile = availableRepliers.map(name => {
+                    const isChecked = req.repliers && req.repliers.includes(name) ? 'checked' : '';
+                    return `<label class="inline-flex items-center space-x-1 bg-white px-2 py-1 rounded border text-xs font-bold">
+                        <input type="checkbox" value="${name}" ${isChecked} class="replier-checkbox-${req.id} rounded text-amber-600">
+                        <span>${name}</span>
+                    </label>`;
+                }).join('');
+
+                return `
+                    <div class="bg-white border rounded-2xl p-4 space-y-3 shadow-sm">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-slate-800">#${requests.length - index} [${req.office}]</span>
+                            <span class="text-xs text-slate-500">${req.submitTime}</span>
+                        </div>
+                        <div class="text-xs text-slate-600 font-bold">📍 地點：${req.location} | 需用：${req.date}</div>
+                        <p class="text-sm bg-slate-50 p-2.5 rounded-lg">${req.content}</p>
+                        
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-500 mb-1">優先順序</label>
+                                <select id="priority-${req.id}" class="w-full border rounded-lg p-1.5 text-xs font-bold bg-white">
+                                    <option value="高" ${req.priority === '高' ? 'selected' : ''}>高</option>
+                                    <option value="中" ${req.priority === '中' ? 'selected' : ''}>中</option>
+                                    <option value="低" ${req.priority === '低' ? 'selected' : ''}>低</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-500 mb-1">處理狀態</label>
+                                <select id="status-${req.id}" class="w-full border rounded-lg p-1.5 text-xs font-bold bg-white">
+                                    <option value="待處理" ${req.status === '待處理' ? 'selected' : ''}>待處理</option>
+                                    <option value="處理中" ${req.status === '處理中' ? 'selected' : ''}>處理中</option>
+                                    <option value="已完成" ${req.status === '已完成' ? 'selected' : ''}>已完成</option>
+                                </select>
+                            </div>
                         </div>
 
-                        <!-- 回覆內容 -->
                         <div>
-                            <label class="block text-xs font-bold text-slate-600 mb-1">回覆內容</label>
-                            <textarea id="reply-${req.id}" rows="2" class="w-full border-2 border-slate-300 rounded-xl px-3.5 py-2.5 text-lg outline-none focus:ring-1 focus:ring-amber-500 font-medium" placeholder="輸入回覆結果...">${req.reply || ''}</textarea>
+                            <label class="block text-[11px] font-bold text-slate-500 mb-1">回覆人員 (可複選)</label>
+                            <div class="flex flex-wrap gap-1">${replierCheckboxesMobile}</div>
                         </div>
-                        
-                        <div class="text-xs text-slate-500 font-semibold">
+
+                        <div>
+                            <textarea id="reply-${req.id}" rows="2" class="w-full border rounded-lg p-2 text-xs" placeholder="輸入回覆結果...">${req.reply || ''}</textarea>
+                        </div>
+
+                        <div class="text-[11px] text-slate-500">
                             ${req.replyTime ? '上次回覆：' + req.replyTime : '尚未回覆'}
                         </div>
 
-                        <div class="flex justify-between items-center">
-                            <button onclick="updateRequest(${req.id})" class="bg-amber-600 hover:bg-amber-700 text-white text-base font-bold px-5 py-2.5 rounded-xl transition shadow">
+                        <div class="flex justify-between items-center pt-2 border-t">
+                            <button onclick="updateRequest(${req.id})" class="bg-amber-600 text-white text-xs font-bold px-4 py-2 rounded-lg">
                                 儲存回覆
                             </button>
-                            <button onclick="deleteRequest(${req.id})" class="text-red-600 hover:text-red-800 text-base font-bold">
+                            <button onclick="deleteRequest(${req.id})" class="text-red-600 text-xs font-bold">
                                 刪除
                             </button>
                         </div>
-                    </td>
-                </tr>
-            `).join('');
+                    </div>
+                `;
+            }).join('');
         }
 
         render();
