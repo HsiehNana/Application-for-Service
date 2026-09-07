@@ -139,16 +139,17 @@
                 priority: '中', 
                 status: '處理中', 
                 reply: '已排定於本週五進行清運。',
-                replyTime: '2026-06-08 14:20'
+                replyTime: '2026-06-08 14:20',
+                replier: '凃總'
             }
         ];
 
         let currentFilter = '全部';
-        let isAdminLoggedIn = false; // 記錄是否已通過後台驗證
+        let isAdminLoggedIn = false;
 
         document.getElementById('applyDate').value = new Date().toISOString().split('T')[0];
 
-        // 檢查後台密碼
+        // 檢查後台密碼 (改為 311)
         function checkAdminPassword() {
             if (isAdminLoggedIn) {
                 toggleView();
@@ -156,7 +157,7 @@
             }
 
             const inputPassword = prompt('請輸入後端管理密碼：');
-            if (inputPassword === '8016837#311') {
+            if (inputPassword === '311') {
                 isAdminLoggedIn = true;
                 toggleView();
             } else if (inputPassword !== null) {
@@ -231,7 +232,8 @@
                 priority: '中', 
                 status: '待處理', 
                 reply: '',
-                replyTime: ''
+                replyTime: '',
+                replier: ''
             };
 
             requests.unshift(newReq); 
@@ -262,12 +264,14 @@
         function updateRequest(id) {
             const priority = document.getElementById(`priority-${id}`).value;
             const status = document.getElementById(`status-${id}`).value;
+            const replier = document.getElementById(`replier-${id}`).value;
             const reply = document.getElementById(`reply-${id}`).value;
 
             const req = requests.find(r => r.id === id);
             if (req) {
                 req.priority = priority;
                 req.status = status;
+                req.replier = replier;
                 req.reply = reply;
 
                 if (reply.trim() !== '') {
@@ -275,6 +279,7 @@
                     req.replyTime = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
                 } else {
                     req.replyTime = '';
+                    req.replier = '';
                 }
 
                 syncStorage();
@@ -335,7 +340,7 @@
                         <!-- 回覆顯示區 -->
                         <div class="bg-emerald-50 p-5 rounded-xl border-2 border-emerald-200 text-lg mt-2 space-y-2">
                             <div class="flex justify-between items-center">
-                                <strong class="text-emerald-900 text-base font-bold">📢 處室回覆結果：</strong>
+                                <strong class="text-emerald-900 text-base font-bold">📢 ${req.replier ? req.replier + ' 處室回覆' : '處室回覆結果'}：</strong>
                                 <span class="text-xs text-slate-500 font-semibold">${req.replyTime ? '回覆時間：' + req.replyTime : ''}</span>
                             </div>
                             <p class="text-slate-900 leading-relaxed font-medium">${req.reply ? req.reply : '<span class="text-slate-400 italic">尚在處理中，暫無回覆...</span>'}</p>
@@ -384,7 +389,24 @@
                         </select>
                     </td>
                     <td class="p-5 space-y-3 min-w-[260px]">
-                        <textarea id="reply-${req.id}" rows="2" class="w-full border-2 border-slate-300 rounded-xl px-3.5 py-2.5 text-lg outline-none focus:ring-1 focus:ring-amber-500 font-medium" placeholder="輸入回覆結果...">${req.reply || ''}</textarea>
+                        <!-- 回覆人員選單 -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">回覆人員</label>
+                            <select id="replier-${req.id}" class="w-full border-2 border-slate-300 rounded-xl px-3 py-2 text-base font-bold outline-none focus:ring-1 focus:ring-amber-500 bg-white">
+                                <option value="">請選擇人員</option>
+                                <option value="凃總" ${req.replier === '凃總' ? 'selected' : ''}>凃總</option>
+                                <option value="邱帥" ${req.replier === '邱帥' ? 'selected' : ''}>邱帥</option>
+                                <option value="沈帥" ${req.replier === '沈帥' ? 'selected' : ''}>沈帥</option>
+                                <option value="侯大" ${req.replier === '侯大' ? 'selected' : ''}>侯大</option>
+                                <option value="楊大" ${req.replier === '楊大' ? 'selected' : ''}>楊大</option>
+                            </select>
+                        </div>
+
+                        <!-- 回覆內容 -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">回覆內容</label>
+                            <textarea id="reply-${req.id}" rows="2" class="w-full border-2 border-slate-300 rounded-xl px-3.5 py-2.5 text-lg outline-none focus:ring-1 focus:ring-amber-500 font-medium" placeholder="輸入回覆結果...">${req.reply || ''}</textarea>
+                        </div>
                         
                         <div class="text-xs text-slate-500 font-semibold">
                             ${req.replyTime ? '上次回覆：' + req.replyTime : '尚未回覆'}
